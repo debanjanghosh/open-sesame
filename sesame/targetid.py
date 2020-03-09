@@ -6,6 +6,8 @@ import time
 from optparse import OptionParser
 
 from dynet import *
+from dynet_config import set_gpu, gpu
+
 from .evaluation import *
 from .raw_data import make_data_instance
 from .semafor_evaluation import convert_conll_to_frame_elements
@@ -17,10 +19,18 @@ optpr.add_option("--mode", dest="mode", type="choice",
 optpr.add_option("-n", "--model_name", help="Name of model directory to save model to.")
 optpr.add_option("--raw_input", type="str", metavar="FILE")
 optpr.add_option("--config", type="str", metavar="FILE")
+optpr.add_option("--gpu", type="str", default="0")
 (options, args) = optpr.parse_args()
 
+if options.gpu == "1":
+    set_gpu()
+    if gpu():
+        print("GPU support enabled.")
+    else:
+        print("GPU support failed.")
+
 model_dir = "logs/{}/".format(options.model_name)
-model_file_name = "{}best-targetid-{}-model".format(model_dir, VERSION)
+model_file_name = "{}best-{}-{}-model".format(model_dir, options.model_name, VERSION)
 if not os.path.exists(model_dir):
     os.makedirs(model_dir)
 
@@ -115,8 +125,11 @@ if options.mode == "train":
         fout.write(json.dumps(configuration))
         fout.close()
 else:
+    # Missing logfile may mean you have the wrong name for the model in the 
+    # function call (arg: --model_name)
     json_file = open(configuration_file, "r")
     configuration = json.load(json_file)
+        
 
 UNK_PROB = configuration["unk_prob"]
 DROPOUT_RATE = configuration["dropout_rate"]
