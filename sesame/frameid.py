@@ -6,6 +6,7 @@ import time
 from optparse import OptionParser
 
 from dynet import *
+from dynet_config import set_gpu, gpu
 from .evaluation import *
 from .raw_data import make_data_instance
 from .semafor_evaluation import convert_conll_to_frame_elements
@@ -18,7 +19,18 @@ optpr.add_option("--hier", action="store_true", default=False)
 optpr.add_option("--exemplar", action="store_true", default=False)
 optpr.add_option("--raw_input", type="str", metavar="FILE")
 optpr.add_option("--config", type="str", metavar="FILE")
+optpr.add_option("--gpu", type="str", default="0")
+optpr.add_option("--dynet-mem", type="str", default="0")
+optpr.add_option("--dynet-devices", type="str", default="0")
+
 (options, args) = optpr.parse_args()
+
+if options.gpu == "1":
+    set_gpu()
+    if gpu():
+        print("GPU support enabled.")
+    else:
+        print("GPU support failed.")
 
 model_dir = "logs/{}/".format(options.model_name)
 model_file_name = "{}best-frameid-{}-model".format(model_dir, VERSION)
@@ -236,8 +248,10 @@ def identify_frames(builders, tokens, postags, lexunit, targetpositions, goldfra
         f_i = w_f * rectify(w_z * fbemb_i + b_z) + b_f
         if trainmode and USE_DROPOUT:
             f_i = dropout(f_i, DROPOUT_RATE)
-
-        logloss = log_softmax(f_i, valid_frames)
+        
+        f_i_cpu = to_device(f_i, 'CPU')
+        logloss = log_softmax(f_i_cpu, valid_frames)
+        logloss = to_device(logloss, 'GPU:0')
 
         if not trainmode:
             chosenframe = np.argmax(logloss.npvalue())
