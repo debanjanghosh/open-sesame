@@ -140,7 +140,7 @@ class CoNLL09Example(FrameSemParse):
         mystr = ""
         if predictedfes is None:
             for e in self._elements:
-                mystr += e.get_str()
+                mystr += str(e.get_str())
         else:
             rolelabels = [EMPTY_FE for _ in self._elements]
             for feid in predictedfes:
@@ -156,7 +156,7 @@ class CoNLL09Example(FrameSemParse):
                         rolelabels[position] = INDEX_BIO_DICT[INSIDE] + "-" + felabel
 
             for e, role in zip(self._elements, rolelabels):
-                mystr += e.get_str(rolelabel=role)
+                mystr += str(e.get_str(rolelabel=role))
 
         return mystr
 
