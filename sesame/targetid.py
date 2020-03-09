@@ -19,7 +19,8 @@ optpr.add_option("--mode", dest="mode", type="choice",
 optpr.add_option("-n", "--model_name", help="Name of model directory to save model to.")
 optpr.add_option("--raw_input", type="str", metavar="FILE")
 optpr.add_option("--config", type="str", metavar="FILE")
-optpr.add_option("--gpu", type="str", default="0")
+optpr.add_option("--dynet-mem", type="str", default="0")
+optpr.add_option("--dynet-devices", type="str", default="0")
 (options, args) = optpr.parse_args()
 
 if options.gpu == "1":

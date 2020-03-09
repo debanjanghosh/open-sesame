@@ -19,18 +19,10 @@ optpr.add_option("--hier", action="store_true", default=False)
 optpr.add_option("--exemplar", action="store_true", default=False)
 optpr.add_option("--raw_input", type="str", metavar="FILE")
 optpr.add_option("--config", type="str", metavar="FILE")
-optpr.add_option("--gpu", type="str", default="0")
 optpr.add_option("--dynet-mem", type="str", default="0")
-optpr.add_option("--dynet-devices", type="str", default="0")
+optpr.add_option("--dynet-gpus", type="str", default="0")
 
 (options, args) = optpr.parse_args()
-
-if options.gpu == "1":
-    set_gpu()
-    if gpu():
-        print("GPU support enabled.")
-    else:
-        print("GPU support failed.")
 
 model_dir = "logs/{}/".format(options.model_name)
 model_file_name = "{}best-frameid-{}-model".format(model_dir, VERSION)

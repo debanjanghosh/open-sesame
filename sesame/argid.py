@@ -30,7 +30,8 @@ optpr.add_option("--syn", type="choice", choices=["dep", "constit", "none"], def
 optpr.add_option("--ptb", action="store_true", default=False)
 optpr.add_option("--raw_input", type="str", metavar="FILE")
 optpr.add_option("--config", type="str", metavar="FILE")
-optpr.add_option("--gpu", type="str", default="0")
+optpr.add_option("--dynet-mem", type="str", default="0")
+optpr.add_option("--dynet-devices", type="str", default="0")
 (options, args) = optpr.parse_args()
 
 if options.gpu == "1":
