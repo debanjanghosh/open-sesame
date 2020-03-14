@@ -5,6 +5,7 @@ import os
 import sys
 import time
 from dynet import *
+from dynet_config import set_gpu, gpu
 from optparse import OptionParser
 
 from .evaluation import *
@@ -29,8 +30,10 @@ optpr.add_option("--syn", type="choice", choices=["dep", "constit", "none"], def
 optpr.add_option("--ptb", action="store_true", default=False)
 optpr.add_option("--raw_input", type="str", metavar="FILE")
 optpr.add_option("--config", type="str", metavar="FILE")
+optpr.add_option("--dynet-mem", type="str", default="0")
+optpr.add_option("--dynet-gpus", type="str", default="0")
 (options, args) = optpr.parse_args()
-
+        
 model_dir = "logs/{}/".format(options.model_name)
 model_file_name = "{}best-argid-{}-model".format(model_dir, VERSION)
 if not os.path.exists(model_dir):
