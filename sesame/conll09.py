@@ -14,7 +14,6 @@ FEDICT = FspDict()
 DEPRELDICT = FspDict()
 CLABELDICT = FspDict()
 
-
 class CoNLL09Element:
     """
     All the elements in a single line of a CoNLL 2009-like file.
@@ -84,11 +83,14 @@ class CoNLL09Element:
             # ID    FORM    LEMMA   PLEMMA  POS PPOS    SENT#   PFEAT   HEAD    PHEAD   DEPREL  PDEPREL LU  FRAME ROLE
             # 0     1       2       3       4   5       6       7       8       9       10      11      12  13    14
             return "{}\t{}\t_\t{}\t{}\t{}\t{}\t_\t_\t{}\t_\t{}\t{}\t{}\t{}\n".format(
-                self.id, form, predicted_lemma, self.fn_pos, nltkpos, self.sent_num, dephead, deprel, lu, frame, rolelabel).encode('utf-8')
+                self.id, form, predicted_lemma, self.fn_pos, nltkpos, self.sent_num, dephead, deprel, lu, frame, rolelabel)
 
 
 class CoNLL09Example(FrameSemParse):
-    """a single example in CoNLL 09 format which corresponds to a single frame-semantic parse structure"""
+    """
+    A single example in CoNLL 09 format 
+    which corresponds to a single frame-semantic
+    parse structure"""
 
     def __init__(self, sentence, elements):
         FrameSemParse.__init__(self, sentence)
