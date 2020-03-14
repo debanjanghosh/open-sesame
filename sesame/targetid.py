@@ -20,15 +20,8 @@ optpr.add_option("-n", "--model_name", help="Name of model directory to save mod
 optpr.add_option("--raw_input", type="str", metavar="FILE")
 optpr.add_option("--config", type="str", metavar="FILE")
 optpr.add_option("--dynet-mem", type="str", default="0")
-optpr.add_option("--dynet-devices", type="str", default="0")
+optpr.add_option("--dynet-gpus", type="str", default="0")
 (options, args) = optpr.parse_args()
-
-if options.gpu == "1":
-    set_gpu()
-    if gpu():
-        print("GPU support enabled.")
-    else:
-        print("GPU support failed.")
 
 model_dir = "logs/{}/".format(options.model_name)
 model_file_name = "{}best-{}-{}-model".format(model_dir, options.model_name, VERSION)
@@ -307,8 +300,10 @@ def identify_targets(builders, tokens, postags, lemmas, gold_targets=None):
         score_i = w_f * rectify(w_z * h_i + b_z) + b_f
         if train_mode and USE_DROPOUT:
             score_i = dropout(score_i, DROPOUT_RATE)
-
+        
+        score_i = to_device(score_i, 'CPU')
         logloss = log_softmax(score_i, [0, 1])
+        score_i = to_device(score_i, 'GPU:0')
         if not train_mode:
             is_target = np.argmax(logloss.npvalue())
         else:
